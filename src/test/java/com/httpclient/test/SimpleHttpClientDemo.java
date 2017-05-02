@@ -156,6 +156,10 @@ public class SimpleHttpClientDemo {
 		//绕过证书验证，处理https请求
 		SSLContext sslcontext = createIgnoreVerifySSL();
 		
+//	    //wsria.com是自己的密钥库的密码
+//	    //如果密码为空，则用"nopassword"代替  
+//	    SSLContext sslcontext = custom("D:\\keys\\wsriakey", "wsria.com");  
+		
         // 设置协议http和https对应的处理socket链接工厂的对象
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
             .register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -164,8 +168,10 @@ public class SimpleHttpClientDemo {
         PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
 
         //创建自定义的httpclient对象
-//		CloseableHttpClient client = proxy("127.0.0.1", 8087).setConnectionManager(connManager).build();
-		CloseableHttpClient client = HttpClients.createDefault();
+//        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.custom().setConnectionManager(connManager).build(); 
+//        CloseableHttpClient client = proxy("127.0.0.1", 8087).setConnectionManager(connManager).build();
+//        CloseableHttpClient client = proxy("jp02.ipip.pm", 47052).setConnectionManager(connManager).build();
 		
 		//创建post方式请求对象
 		HttpPost httpPost = new HttpPost(url);
@@ -211,21 +217,36 @@ public class SimpleHttpClientDemo {
 //	
 	
 	public static void main(String[] args) throws ParseException, IOException, KeyManagementException, NoSuchAlgorithmException {
-		String url = "http://php.weather.sina.com.cn/iframe/index/w_cl.php";
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("code", "js");
-		map.put("day", "0");
-		map.put("city", "上海");
-		map.put("dfc", "1");
-		map.put("charset", "utf-8");
-		String body = send(url, map, "utf-8");
-		System.out.println("交易响应结果：");
-		System.out.println(body);
-		System.out.println("-----------------------------------");
+//		String url = "http://php.weather.sina.com.cn/iframe/index/w_cl.php";
+//		Map<String, String> map = new HashMap<String, String>();
+//		map.put("code", "js");
+//		map.put("day", "0");
+//		map.put("city", "上海");
+//		map.put("dfc", "1");
+//		map.put("charset", "utf-8");
+//		String body = send(url, map, "utf-8");
+//		System.out.println("交易响应结果：");
+//		System.out.println(body);
+//		System.out.println("-----------------------------------");
+//		
+//		map.put("city", "北京");
+//		body = send(url, map, "utf-8");
+//		System.out.println("交易响应结果：");
+//		System.out.println(body);
 		
-		map.put("city", "北京");
-		body = send(url, map, "utf-8");
-		System.out.println("交易响应结果：");
-		System.out.println(body);
+//        String url = "https://sso.wsria.com:8443/";  
+//        String body = send(url, null, "utf-8");  
+//        System.out.println("交易响应结果：");  
+//        System.out.println(body);  
+		
+//        String url = "https://kyfw.12306.cn/otn/";  
+//        String body = send(url, null, "utf-8");  
+//        System.out.println("交易响应结果：");  
+//        System.out.println(body);  
+		
+        String url = "https://www.facebook.com/";  
+        String body = send(url, null, "utf-8");  
+        System.out.println("交易响应结果：");  
+        System.out.println(body);  
 	}
 }
