@@ -47,8 +47,8 @@ public class TestCookie {
 		
 		//组装参数
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("username", "用户名");
-		map.put("password", "密码");
+		map.put("username", "569529989@qq.com");
+		map.put("password", "Hok12345");
 		map.put("lt", lt);
 		map.put("execution", execution);
 		map.put("_eventId", _eventId);

@@ -49,7 +49,7 @@ public class HttpClientTest {
 		
 		System.out.println("--------代理设置（绕过证书验证）-------");
 		url="https://www.facebook.com/";
-		HttpClient client= HCB.custom().timeout(10000).proxy("127.0.0.1", 8087).ssl().build();//采用默认方式（绕过证书验证）
+		HttpClient client= HCB.custom().timeout(10000).ssl().build();//采用默认方式（绕过证书验证）
 		//执行请求
 		resp = HttpClientUtil.get(config.client(client));
 		System.out.println("请求结果内容长度："+ resp.length());
@@ -120,12 +120,15 @@ public class HttpClientTest {
 		String[] imgurls ={"http://ss.bdimg.com/static/superman/img/logo/logo_white_fe6da1ec.png",
 				"https://scontent-hkg3-1.xx.fbcdn.net/hphotos-xaf1/t39.2365-6/11057093_824152007634067_1766252919_n.png"};
 		// 设置header信息
-		Header[] headers = HttpHeader.custom().userAgent("Mozilla/5.0").from("http://blog.csdn.net/newest.html").build();
-		HttpClient client= HCB.custom().timeout(10000).proxy("127.0.0.1", 8087).ssl().build();//采用默认方式（绕过证书验证）
+//		Header[] headers = HttpHeader.custom().userAgent("Mozilla/5.0").from("http://blog.csdn.net/newest.html").build();
+//		HttpClient client= HCB.custom().timeout(10000).proxy("127.0.0.1", 8087).ssl().build();//采用默认方式（绕过证书验证）
+		Header[] headers = HttpHeader.custom().userAgent("Mozilla/5.0").from("http://blog.csdn.net").build();
+		HttpClient client= HCB.custom().timeout(10000).ssl().build();//采用默认方式（绕过证书验证）
 		
 		 long start = System.currentTimeMillis();        
 	        try {
 				int pagecount = urls.length;
+				System.out.println(pagecount);
 				ExecutorService executors = Executors.newFixedThreadPool(pagecount);
 				CountDownLatch countDownLatch = new CountDownLatch(pagecount*10);         
 				for(int i = 0; i< pagecount*10;i++){

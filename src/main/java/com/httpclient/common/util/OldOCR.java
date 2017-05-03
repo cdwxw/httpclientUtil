@@ -279,7 +279,7 @@ public class OldOCR {
 	
 	public static void main(String[] args) throws HttpProcessException, IOException {
 //		enableCatch();
-		String filePath="C:/Users/160049/Desktop/中国.png";
+		String filePath="D:/valiCode.png";
 		String url = "http://file.ocrking.net:6080/small/20161104/w4fCjnzCl8KTwphpwqnCv2bCn8Kp/66fcff8d-61b1-49d6-bbfe-7428cf7accdf_debug.png?e9gFvJmkLbmgsZNTUCCNkjfi8J0Wbpn1CZHeP98eT1kxZ0ISBDt8Ql6h6zQ79pJg";
 		String url2 = "http://59.41.9.91/GZCX/WebUI/Content/Handler/ValidateCode.ashx?0.3271647585525703";
 		String code1 = ocrCode(filePath, 5);

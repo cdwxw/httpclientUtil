@@ -1,0 +1,17 @@
+成都个人社保网上经办
+http://localhost:8080/ysg/rpc?reqCode=100000&reqData=%7B%22gjj%22%3A%22%22%2C%22idcardNo%22%3A%22342425198609010213%22%2C%22password%22%3A%22Hok12345%22%2C%22valiCode%22%3A%22%22%7D
+https://gr.cdhrss.gov.cn:442/cdwsjb/login.jsp
+成都社保电子证明查询打印
+http://localhost:8080/ysg/rpc?reqCode=100001&reqData=%7B%22gjj%22%3A%22%22%2C%22idcardNo%22%3A%22024100290%22%2C%22password%22%3A%2219860901%22%2C%22valiCode%22%3A%22%22%7D
+http://jypt.cdhrss.gov.cn:8048/portal.php?id=1
+
+宜宾市住房公积金
+http://localhost:8080/ysg/rpc?reqCode=100100&reqData=%7B%22idcardNo%22%3A%22511502198612130656%22%2C%22password%22%3A%22wangkaizhi%22%2C%22gjj%22%3A%22515006028901%22%7D
+http://cx.ybgjj.com:5566/search.asp
+511502198612130656		515006028901
+wangkaizhi
+宜宾市医社保
+http://localhost:8080/ysg/rpc?reqCode=100101&reqData=%7B%22idcardNo%22%3A%22w2300603%22%2C%22password%22%3A%22pw182676%22%2C%22valiCode%22%3A%22*****%22%7D
+http://119.6.84.89:7001/scwssb/login.jsp
+w2300603		weichunmei
+pw182676		12345678a
