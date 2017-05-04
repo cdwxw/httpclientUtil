@@ -6,29 +6,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.http.Header;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.httpclient.HttpClientUtil;
 import com.httpclient.common.HttpConfig;
-import com.httpclient.common.HttpHeader;
 import com.httpclient.exception.HttpProcessException;
 
 /**
@@ -44,8 +34,13 @@ public class YBYS {
 	public static final String IMAGE_SAVE_PATH = "d://valiCode.png";
 	public static final String TO_LOGIN_URL = "http://119.6.84.89:7001/scwssb/login.jsp";// 进入登录页面url
 	public static final String LOGIN_URL = "http://119.6.84.89:7001/scwssb/userYzAction!check.do";// 登录POST请求url
-	public static final String POST_URL = "http://119.6.84.89:7001/scwssb/j_spring_security_check";// 登录二次POST请求url
-	public static final String TO_INDEX_URL = "http://119.6.84.89:7001/scwssb/loginSuccessAction.do";// 登录成功后url
+	// public static final String POST_URL =
+	// "http://119.6.84.89:7001/scwssb/j_spring_security_check";// 登录二次POST请求url
+	public static final String POST_REDIRECT_URL = "http://119.6.84.89:7001/scwssb/j_spring_security_check?r=%27+Math.random()";// 二次POST
+																																// 重定向
+	public static final String LOGIN_SUCCESS_URL = "http://119.6.84.89:7001/scwssb/loginSuccessAction.do";// 登录成功后url
+	public static final String GET_REDIRECT_URL = "http://119.6.84.89:7001/scwssb/indexAction.do";// GET
+																									// 重定向
 	public static final String INDEX_URL = "http://119.6.84.89:7001/scwssb/welcome2.jsp";// 主页url
 	public static final String CHARSET = "utf-8";// 字符编码设置
 
@@ -58,19 +53,12 @@ public class YBYS {
 		HttpConfig config = HttpConfig.custom().url(TO_LOGIN_URL).encoding(CHARSET).context(context);
 
 		// 获取登录所需参数
-		String loginform = HttpClientUtil.get(config);// 可以用.send(config)代替，但是推荐使用明确的get方法
-		// System.out.println(loginform);
+		HttpClientUtil.get(config);// 可以用.send(config)代替，但是推荐使用明确的get方法
 		System.out.println("获取登录所需参数");
-		// j_username : j_username,
-		// j_password : j_password,
-		// orgId : $("#orgId").val(),
-		// checkCode : $("#checkCode").val(),
-		// bz : 0,
-		// tm : new Date().getTime()
 
 		// 获取验证码图片
 		File file = new File(IMAGE_SAVE_PATH);
-		HttpClientUtil.down(HttpConfig.custom().url(CREATE_IMAGE_URL).out(new FileOutputStream(file)));
+		HttpClientUtil.down(config.url(CREATE_IMAGE_URL).out(new FileOutputStream(file)));
 		if (file.exists()) {
 			System.out.println("图片下载成功了！存放在：" + file.getPath());
 		}
@@ -86,34 +74,30 @@ public class YBYS {
 		}
 
 		// 组装参数
+		// j_username : j_username,
+		// j_password : j_password,
+		// orgId : $("#orgId").val(),
+		// checkCode : $("#checkCode").val(),
+		// bz : 0,
+		// tm : new Date().getTime()
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("j_username", "w2300603");
 		map.put("j_password", "pw182676");
 		map.put("checkCode", checkCode);
-		map.put("orgId", "");
+		map.put("orgId", "undefined");
 		map.put("bz", "0");
-		map.put("tm", Long.toString(new Date().getTime()));
-		// for(Entry<String, Object> e:map.entrySet()){
-		// System.out.println(e.getKey()+"--"+e.getValue());
+		map.put("tm", new Date().getTime() + "");
+		// for (Entry<String, Object> e : map.entrySet()) {
+		// System.out.println(e.getKey() + "--" + e.getValue());
 		// }
 
-		printCookieStore(context);
-
 		// 发送登录POST请求
-		String result = "";
-		result = HttpClientUtil.post(config.url(LOGIN_URL).map(map));// 可以用.send(config.method(HttpMethods.POST).map(map))代替，但是推荐使用明确的post方法
-		System.out.println(LOGIN_URL + result);
-
-		printCookieStore(context);
-
-		map.put("r", "'" + Math.random());
+		HttpClientUtil.post(config.url(LOGIN_URL).map(map));// 可以用.send(config.method(HttpMethods.POST).map(map))代替，但是推荐使用明确的post方法
 
 		// 二次发送登录POST请求
-		// Header[] hs =
-		// HttpHeader.custom().cookie("j_username=w2300603; JSESSIONID=VGfL4-PPEXvI5mjHUvylpLCfKhtKrmBxE-jr6TBssN7XLkiVlnmX!-475734474; SERVERID=s5").build();
-		result = HttpClientUtil.post(config.url(POST_URL).map(map));// 可以用.send(config.method(HttpMethods.POST).map(map))代替，但是推荐使用明确的post方法
-		System.out.println(POST_URL + result);
-		if (result.contains("验证码输入错误")) {// 如果有帐号登录，则说明未登录成功
+		HttpClientUtil.post(config.url(POST_REDIRECT_URL).map(map));// 可以用.send(config.method(HttpMethods.POST).map(map))代替，但是推荐使用明确的post方法
+		String result = HttpClientUtil.get(config.url(LOGIN_SUCCESS_URL).context(context));// 可以用.send(config.url(scoreUrl).headers(headers))代替，但是推荐使用明确的post方法
+		if (result.contains("false")) {// 如果有帐号登录，则说明未登录成功
 			Document doc = Jsoup.parse(result);
 			// String errmsg = doc.select("script").html();
 			System.err.println("登录失败：" + doc);
@@ -121,21 +105,8 @@ public class YBYS {
 		}
 		System.out.println("----登录成功----");
 
-		cookieStore = context.getCookieStore();// 二次POST 新建cookieStore
-//		 BasicClientCookie bcc = new BasicClientCookie("j_username", "w2300603");// 下发token至客户端cookie，登陆检查用
-//		 cookieStore.addCookie(bcc);
-		context.setCookieStore(cookieStore);
-		printCookieStore(context);
-
-		// 访问主页
-		Header[] headers = HttpHeader.custom().userAgent("User-Agent: Mozilla/5.0").build();
-		result = HttpClientUtil.get(config.url(TO_INDEX_URL).headers(headers).context(context));// 可以用.send(config.url(scoreUrl).headers(headers))代替，但是推荐使用明确的post方法
-		System.out.println("跳转主页：" + TO_INDEX_URL + result);
-		printCookieStore(context);
-
-		result = HttpClientUtil.get(config.url(INDEX_URL).headers(headers).context(context));// 可以用.send(config.url(scoreUrl).headers(headers))代替，但是推荐使用明确的post方法
-		// System.out.println("访问主页：" + INDEX_URL + result);
-		printCookieStore(context);
+		result = HttpClientUtil.get(config.url("http://119.6.84.89:7001/scwssb/index_nethall/privateHome.jsp").context(context));// 可以用.send(config.url(scoreUrl).headers(headers))代替，但是推荐使用明确的post方法
+		 System.out.println("访问主页：" + result);
 
 	}
 
@@ -144,7 +115,7 @@ public class YBYS {
 		// 打印参数，可以看到cookie里已经有值了。
 		cookieStore = context.getCookieStore();
 		for (Cookie cookie : cookieStore.getCookies()) {
-			System.out.println(cookie.getName() + "--" + cookie.getValue());
+			System.out.println("Cookies:" + cookie.getName() + "--" + cookie.getValue());
 		}
 	}
 
