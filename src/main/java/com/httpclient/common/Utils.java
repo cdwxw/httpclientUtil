@@ -32,16 +32,16 @@ import org.apache.log4j.Logger;
  * 		用于设定参数特定类型
  *		启用bebug模式，打印消息
  * 
- * @author arron
- * @date 2015年11月10日 下午12:49:26 
+ * @author wxw
+ * @date 2015年11月10日 下午12:49:26 s
  * @version 1.0 
  */
 public class Utils {
 	
 	//传入参数特定类型
 	public static final String ENTITY_STRING="$ENTITY_STRING$";
-	public static final String ENTITY_FILE="$ENTITY_FILEE$";
 	public static final String ENTITY_BYTES="$ENTITY_BYTES$";
+	public static final String ENTITY_FILE="$ENTITY_FILEE$";
 	public static final String ENTITY_INPUTSTREAM="$ENTITY_INPUTSTREAM$";
 	public static final String ENTITY_SERIALIZABLE="$ENTITY_SERIALIZABLE$";
 	public static final String ENTITY_MULTIPART="$ENTITY_MULTIPART$";
@@ -90,7 +90,7 @@ public class Utils {
 					if(ENTITY_STRING.equals(entry.getKey())){//string
 						entity = new StringEntity(String.valueOf(entry.getValue()), encoding);
 						break;
-					}else if(ENTITY_BYTES.equals(entry.getKey())){//file
+					}else if(ENTITY_BYTES.equals(entry.getKey())){//byte[]
 						entity = new ByteArrayEntity((byte[])entry.getValue());
 						break;
 					}else if(ENTITY_FILE.equals(entry.getKey())){//file

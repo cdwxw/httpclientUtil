@@ -7,7 +7,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 /** 
  * 封装Cookie
  * 
- * @author arron
+ * @author wxw
  * @date 2016年1月12日 上午8:42:13 
  * @version 1.0 
  */

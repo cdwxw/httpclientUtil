@@ -2,8 +2,9 @@ package com.httpclient.exception;
 
 
 /** 
+ * 自定义Http异常类
  * 
- * @author arron
+ * @author wxw
  * @date 2015年11月1日 下午2:31:37 
  * @version 1.0 
  */

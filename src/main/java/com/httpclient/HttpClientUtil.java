@@ -34,7 +34,7 @@ import com.httpclient.exception.HttpProcessException;
 /**
  * 使用HttpClient模拟发送（http/https）请求
  * 
- * @author arron
+ * @author wxw
  * @date 2015年11月4日 下午4:10:59 
  * @version 1.0
  */

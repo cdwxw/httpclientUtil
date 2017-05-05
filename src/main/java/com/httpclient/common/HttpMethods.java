@@ -3,7 +3,7 @@ package com.httpclient.common;
 	/**
 	 * 枚举HttpMethods方法
 	 * 
-	 * @author arron
+	 * @author wxw
 	 * @date 2015年11月17日 下午4:45:59 
 	 * @version 1.0
 	 */

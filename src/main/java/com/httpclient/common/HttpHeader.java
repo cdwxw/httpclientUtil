@@ -10,7 +10,7 @@ import org.apache.http.message.BasicHeader;
 /**
  * 创建HttpReqHead
  * 
- * @author arron
+ * @author wxw
  * @date 2015年11月9日 上午10:37:23
  * @version 1.0
  */
@@ -573,7 +573,7 @@ public class HttpHeader {
 	/**
 	 * Http头信息
 	 * 
-	 * @author arron
+	 * @author wxw
 	 * @date 2015年11月9日 上午11:29:04
 	 * @version 1.0
 	 */
@@ -614,7 +614,7 @@ public class HttpHeader {
 	/**
 	 * 常用头信息配置
 	 * 
-	 * @author arron
+	 * @author wxw
 	 * @date 2015年11月18日 下午5:30:00 
 	 * @version 1.0
 	 */

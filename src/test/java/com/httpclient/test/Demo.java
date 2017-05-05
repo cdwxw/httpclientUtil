@@ -83,6 +83,8 @@ public class Demo {
 		//如果指向看是否访问正常
 		//String result3 = HttpClientUtil.head(config); // 返回Http协议号+状态码
 		//int statusCode = HttpClientUtil.status(config);//返回状态码
+		
+		System.out.println("$ENTITY_STRING$".getClass()+"|"+String.class);
 											
 	}
 }

@@ -15,7 +15,7 @@ import org.apache.http.protocol.HttpContext;
 /** 
  * 请求配置类
  * 
- * @author arron
+ * @author wxw
  * @date 2016年2月2日 下午3:14:32 
  * @version 1.0 
  */
@@ -87,7 +87,7 @@ public class HttpConfig {
 	private String outenc;
 
 	/**
-	 * 解决多线程下载时，strean被close的问题
+	 * 解决多线程下载时，stream被close的问题
 	 */
 	private static final ThreadLocal<OutputStream> outs = new ThreadLocal<OutputStream>();	
 	
@@ -154,7 +154,7 @@ public class HttpConfig {
 	}
 	
 	/**
-	 * 传递参数
+	 * 传递参数 (同步操作)
 	 */
 	public HttpConfig map(Map<String, Object> map) {
 		synchronized (getClass()) {
@@ -191,7 +191,7 @@ public class HttpConfig {
 		return files(filePaths, inputName, false);
 	}
 	/**
-	 * 上传文件时用到
+	 * 上传文件时用到 (同步操作)
 	 * @param filePaths			待上传文件所在路径
 	 * @param inputName		即file input 标签的name值，默认为file
 	 * @param forceRemoveContentTypeChraset
