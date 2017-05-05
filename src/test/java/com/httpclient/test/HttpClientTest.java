@@ -15,6 +15,7 @@ import com.httpclient.HttpClientUtil;
 import com.httpclient.builder.HCB;
 import com.httpclient.common.HttpConfig;
 import com.httpclient.common.HttpHeader;
+import com.httpclient.common.Utils;
 import com.httpclient.exception.HttpProcessException;
 
 /** 
@@ -25,11 +26,27 @@ import com.httpclient.exception.HttpProcessException;
  */
 public class HttpClientTest {
 	
+	public static void main(String[] args) throws Exception {
+		File file = new File("D:" + File.separator + "aaa");
+		if (!file.exists() && !file.isFile()) {
+			file.mkdir();
+		}
+		
+//		Utils.debug();
+		
+//		testOne();
+		testMutilTask();
+	}
+	
+	/**
+	 * 单线程调用测试
+	 * @throws HttpProcessException
+	 */
 	public static void testOne() throws HttpProcessException{
 		
-		System.out.println("--------简单方式调用（默认post）--------");
+		System.out.println("--------简单方式调用（默认GET）--------");
 		String url = "http://tool.oschina.net/";
-		HttpConfig  config = HttpConfig.custom();
+		HttpConfig config = HttpConfig.custom();
 		//简单调用
 		String resp = HttpClientUtil.get(config.url(url));
 
@@ -40,18 +57,25 @@ public class HttpClientTest {
 		System.out.println("--------加入header设置--------");
 		url="http://blog.csdn.net/xiaoxian8023";
 		//设置header信息
-		Header[] headers=HttpHeader.custom().userAgent("Mozilla/5.0").build();
+		Header[] headers=HttpHeader.custom().userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0").build();
 		//执行请求
-		resp = HttpClientUtil.get(config.headers(headers));
+		resp = HttpClientUtil.get(config.url(url).headers(headers));
 		System.out.println("请求结果内容长度："+ resp.length());
 
 		System.out.println("\n#################################\n");
 		
 		System.out.println("--------代理设置（绕过证书验证）-------");
-		url="https://www.facebook.com/";
-		HttpClient client= HCB.custom().timeout(10000).ssl().build();//采用默认方式（绕过证书验证）
+		url = "https://www.facebook.com/";
+//		url = "https://kyfw.12306.cn/otn/";
+//		url = "https://gr.cdhrss.gov.cn:442/cdwsjb/login.jsp";
+		HttpClient client= HCB.custom()
+								.timeout(10000)
+								.proxy("127.0.0.1", 1080)
+								.ssl()
+								.build()
+								;//采用默认方式（绕过证书验证）
 		//执行请求
-		resp = HttpClientUtil.get(config.client(client));
+		resp = HttpClientUtil.get(config.url(url).client(client));
 		System.out.println("请求结果内容长度："+ resp.length());
 
 		System.out.println("\n#################################\n");
@@ -63,28 +87,31 @@ public class HttpClientTest {
 //		//执行请求
 //		resp = CopyOfHttpClientUtil.get(config.method(HttpMethods.GET));
 //		System.out.println("请求结果内容长度："+ resp.length());
+//
+//		System.out.println("\n#################################\n");
+
 		try {
 			System.out.println("--------下载测试-------");
 			url="http://ss.bdimg.com/static/superman/img/logo/logo_white_fe6da1ec.png";
-			FileOutputStream out = new FileOutputStream(new File("d://aaa//000.png"));
+			FileOutputStream out = new FileOutputStream(new File("d:\\aaa\\000.png"));
 			HttpClientUtil.down(HttpConfig.custom().url(url).out(out));
 			out.flush();
 			out.close();
-			System.out.println("--------下载测试+代理-------");
 			
-			out = new FileOutputStream(new File("d://aaa//001.png"));
+			System.out.println("--------下载测试+代理-------");
+			out = new FileOutputStream(new File("d:\\aaa\\001.png"));
 			HttpClientUtil.down(HttpConfig.custom().client(client).url(url).out(out));
 			out.flush();
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println("\n#################################\n");
 	}
 	
-	
-	
+	/**
+	 * 多线程调用测试
+	 * @throws HttpProcessException
+	 */
 	public static void testMutilTask() throws HttpProcessException{
 		// URL列表数组
 		String[] urls = {
@@ -154,48 +181,40 @@ public class HttpClientTest {
 	        //(9803+8244+8188+8378+8188)/5=42 801/5= 8 560.2---150
 	}
 	
-	 static class GetRunnable implements Runnable {
-	        private CountDownLatch countDownLatch;
-	        private HttpConfig config = null;
-	        
-	        public GetRunnable setConfig(HttpConfig config){
-	        	this.config = config;
-	        	return this;
-	        }
+	static class GetRunnable implements Runnable {
+		private CountDownLatch countDownLatch;
+		private HttpConfig config = null;
 
-	        public GetRunnable(CountDownLatch countDownLatch){
-	            this.countDownLatch = countDownLatch;
-	        }
-	        @Override
-	        public void run() {
-	            try {
-	            	if(config.out()==null){
-	            		String response = null;
-	            		response =  HttpClientUtil.get(config);
-	            		System.out.println(Thread.currentThread().getName()+"--获取内容长度："+response.length());
-	            	}else{
-	            		HttpClientUtil.down(config);
-	            		try {
-							config.out().flush();
-							config.out().close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-	            	}
-	            } catch (HttpProcessException e) {
-					e.printStackTrace();
-				} finally {
-	                countDownLatch.countDown();
-	            }
-	        }
-	    }  
-	
-	public static void main(String[] args) throws Exception {
-		File file = new File("d://aaa");
-		if(!file.exists() && file.isDirectory()){
-			file.mkdir();
+		public GetRunnable setConfig(HttpConfig config) {
+			this.config = config;
+			return this;
 		}
-//		testOne();
-		testMutilTask();
+
+		public GetRunnable(CountDownLatch countDownLatch) {
+			this.countDownLatch = countDownLatch;
+		}
+
+		@Override
+		public void run() {
+			try {
+				if (config.out() == null) {
+					String response = null;
+					response = HttpClientUtil.get(config);
+					System.out.println(Thread.currentThread().getName() + "--获取内容长度：" + response.length());
+				} else {
+					HttpClientUtil.down(config);
+					try {
+						config.out().flush();
+						config.out().close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (HttpProcessException e) {
+				e.printStackTrace();
+			} finally {
+				countDownLatch.countDown();
+			}
+		}
 	}
 }
