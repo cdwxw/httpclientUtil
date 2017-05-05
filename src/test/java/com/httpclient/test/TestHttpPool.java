@@ -20,7 +20,7 @@ import com.httpclient.exception.HttpProcessException;
 /**
  * 测试启用http连接池
  * 
- * @author arron
+ * @author wxw
  * @date 2016年11月7日 下午1:08:07 
  * @version 1.0
  */

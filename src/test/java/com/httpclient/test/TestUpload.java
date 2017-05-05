@@ -12,7 +12,7 @@ import com.httpclient.exception.HttpProcessException;
 /** 
  * 上传功能测试
  * 
- * @author arron
+ * @author wxw
  * @date 2016年11月2日 下午1:17:17 
  * @version 1.0 
  */

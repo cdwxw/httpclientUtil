@@ -11,7 +11,7 @@ import com.httpclient.exception.HttpProcessException;
 /**
  * 下载demo
  * 
- * @author arron
+ * @author wxw
  * @date 2016年6月7日 上午10:29:30 
  * @version 1.0
  */

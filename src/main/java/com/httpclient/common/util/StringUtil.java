@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /** 
  * 字符串简易工具类
  * 
- * @author arron
+ * @author wxw
  * @date 2016年4月8日 下午6:31:03 
  * @version 1.0 
  */

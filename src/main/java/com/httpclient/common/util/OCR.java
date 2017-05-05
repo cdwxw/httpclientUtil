@@ -20,7 +20,7 @@ import com.httpclient.exception.HttpProcessException;
 /** 
  * 识别验证码
  * 
- * @author arron
+ * @author wxw
  * @date 2016年3月24日 上午9:44:35 
  * @version 1.0 
  */

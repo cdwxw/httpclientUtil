@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * 最简单的属性文件读取工具类
  * 
- * @author arron
+ * @author wxw
  * @date 2016年1月14日 下午5:37:18 
  * @version 1.0
  */

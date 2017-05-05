@@ -23,7 +23,7 @@ import com.httpclient.exception.HttpProcessException;
 /** 
  * 测试携带cookie的操作
  * 
- * @author arron
+ * @author wxw
  * @date 2016年1月7日 上午10:09:53 
  * @version 1.0 
  */

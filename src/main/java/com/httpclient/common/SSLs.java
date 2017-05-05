@@ -47,23 +47,36 @@ public class SSLs {
 		return new SSLs();
 	}
 
-    // 重写X509TrustManager类的三个方法,信任服务器证书
+    /**
+     * 內部类	重写X509TrustManager类的三个方法,信任服务器证书
+     */
     private static class SSLHandler implements  X509TrustManager, HostnameVerifier{
-		
+
+		/**
+		 * 该方法检查客户端的证书，若不信任该证书则抛出异常。由于我们不需要对客户端进行认证，因此我们只需要执行默认的信任管理器的这个方法。
+		 * JSSE中，默认的信任管理器类为TrustManager。
+		 */
+		@Override
+		public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) 
+				throws java.security.cert.CertificateException {
+		}
+
+		/**
+		 * 该方法检查服务器的证书，若不信任该证书同样抛出异常。通过自己实现该方法，可以使之信任我们指定的任何证书。
+		 * 在实现该方法时，也可以简单的不做任何处理，即一个空的函数体，由于不会抛出异常，它就会信任任何证书。
+		 */
+		@Override
+		public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) 
+				throws java.security.cert.CertificateException {
+		}
+
+		/**
+		 * 返回受信任的X509证书数组。
+		 */
 		@Override
 		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 			return new java.security.cert.X509Certificate[]{};
 			//return null;
-		}
-		
-		@Override
-		public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
-				String authType) throws java.security.cert.CertificateException {
-		}
-		
-		@Override
-		public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
-				String authType) throws java.security.cert.CertificateException {
 		}
 
 		@Override
@@ -72,11 +85,16 @@ public class SSLs {
 		}
 	};
     
-	// 信任主机
+	/**
+	 * 信任主机
+	 */
     public static HostnameVerifier getVerifier() {
         return simpleVerifier;
     }
     
+	/**
+	 * 获取SSLSocketFactory对象
+	 */
     public synchronized SSLSocketFactory getSSLSF(SSLProtocolVersion sslpv) throws HttpProcessException {
         if (sslFactory != null)
             return sslFactory;
@@ -94,9 +112,12 @@ public class SSLs {
     	if (sslConnFactory != null)
     		return sslConnFactory;
     	try {
+    		//创建SSLContext对象，并使用我们指定的信任管理器初始化
 	    	SSLContext sc = getSSLContext(sslpv);
-//	    	sc.init(null, new TrustManager[] { simpleVerifier }, null);
 	    	sc.init(null, new TrustManager[] { simpleVerifier }, new java.security.SecureRandom());
+//	    	sc.init(null, new TrustManager[] { simpleVerifier }, null);
+	    	
+	    	//从上述SSLContext对象中得到SSLConnectionSocketFactory对象
 	    	sslConnFactory = new SSLConnectionSocketFactory(sc, simpleVerifier);
 		} catch (KeyManagementException e) {
 			throw new HttpProcessException(e);
@@ -126,7 +147,9 @@ public class SSLs {
 			instream = new FileInputStream(new File(keyStorePath));
 			trustStore.load(instream, keyStorepass.toCharArray());
 			// 相信自己的CA和所有自签名的证书
-			sc= SSLContexts.custom().loadTrustMaterial(trustStore, new TrustSelfSignedStrategy()) .build();
+			sc = SSLContexts.custom()
+					.loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
+					.build();
 		} catch (KeyManagementException e) {
 			throw new HttpProcessException(e);
 		} catch (KeyStoreException e) {
@@ -187,6 +210,5 @@ public class SSLs {
 			}
     		throw new RuntimeException("未支持当前ssl版本号："+name);
     	}
-    	
     }
 }

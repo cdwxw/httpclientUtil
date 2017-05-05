@@ -19,7 +19,7 @@ import com.httpclient.exception.HttpProcessException;
 
 /** 
  * 
- * @author arron
+ * @author wxw
  * @date 2015年11月1日 下午2:23:18 
  * @version 1.0 
  */

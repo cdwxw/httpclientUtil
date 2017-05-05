@@ -26,13 +26,14 @@ public class HttpHeader {
 	private Map<String, Header> headerMaps = new HashMap<String, Header>();
 	
 	/**
-	 * 指定客户端能够接收的内容类型
-	 * 例如：Accept: text/plain, text/html
+	 * 指定自定义Header
+	 * 例如：.other("customer", "自定义")
 	 * 
 	 * @param accept
 	 */
 	public HttpHeader other(String key, String value) {
-		headerMaps.put(key, new BasicHeader(key, value));
+		headerMaps.put(key, 
+				new BasicHeader(key, value));
 		return this;
 	}
 	/**
@@ -129,6 +130,19 @@ public class HttpHeader {
 	public HttpHeader connection(String connection) {
 		headerMaps.put(HttpReqHead.CONNECTION,
 				new BasicHeader(HttpReqHead.CONNECTION, connection));
+		return this;
+	}
+
+	/**
+	 * 设置此HTTP连接的持续时间（超时时间）
+	 * 例如：Keep-Alive: 300
+	 * 
+	 * @param keepAlive
+	 * @return
+	 */
+	public HttpHeader keepAlive(String keepAlive) {
+		headerMaps.put(HttpReqHead.KEEP_ALIVE,
+				new BasicHeader(HttpReqHead.KEEP_ALIVE, keepAlive));
 		return this;
 	}
 	
@@ -371,6 +385,7 @@ public class HttpHeader {
 	
 	/**
 	 * User-Agent的内容包含发出请求的用户信息
+	 * 例如：User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0
 	 * 
 	 * @param userAgent
 	 * @return
@@ -378,19 +393,6 @@ public class HttpHeader {
 	public HttpHeader userAgent(String userAgent) {
 		headerMaps.put(HttpReqHead.USER_AGENT,
 				new BasicHeader(HttpReqHead.USER_AGENT, userAgent));
-		return this;
-	}
-
-	/**
-	 * 关于消息实体的警告信息
-	 * 例如：Warn: 199 Miscellaneous warning
-	 * 
-	 * @param warning
-	 * @return
-	 */
-	public HttpHeader warning(String warning) {
-		headerMaps.put(HttpReqHead.WARNING,
-				new BasicHeader(HttpReqHead.WARNING, warning));
 		return this;
 	}
 	
@@ -408,15 +410,15 @@ public class HttpHeader {
 	}
 
 	/**
-	 * 设置此HTTP连接的持续时间（超时时间）
-	 * 例如：Keep-Alive: 300
+	 * 关于消息实体的警告信息
+	 * 例如：Warn: 199 Miscellaneous warning
 	 * 
-	 * @param keepAlive
+	 * @param warning
 	 * @return
 	 */
-	public HttpHeader keepAlive(String keepAlive) {
-		headerMaps.put(HttpReqHead.KEEP_ALIVE,
-				new BasicHeader(HttpReqHead.KEEP_ALIVE, keepAlive));
+	public HttpHeader warning(String warning) {
+		headerMaps.put(HttpReqHead.WARNING,
+				new BasicHeader(HttpReqHead.WARNING, warning));
 		return this;
 	}
 
@@ -450,6 +452,10 @@ public class HttpHeader {
 
 	public String connection() {
 		return get(HttpReqHead.CONNECTION);
+	}
+
+	public String keepAlive() {
+		return get(HttpReqHead.KEEP_ALIVE);
 	}
 	
 	public String cookie() {
@@ -535,10 +541,6 @@ public class HttpHeader {
 	public String warning() {
 		return get(HttpReqHead.WARNING);
 	}
-
-	public String keepAlive() {
-		return get(HttpReqHead.KEEP_ALIVE);
-	}
 	
 	
 	/**
@@ -586,6 +588,7 @@ public class HttpHeader {
 		public static final String AUTHORIZATION = "Authorization";
 		public static final String CACHE_CONTROL = "Cache-Control";
 		public static final String CONNECTION = "Connection";
+		public static final String KEEP_ALIVE = "Keep-Alive";
 		public static final String COOKIE = "Cookie";
 		public static final String CONTENT_LENGTH = "Content-Length";
 		public static final String CONTENT_TYPE = "Content-Type";
@@ -598,7 +601,6 @@ public class HttpHeader {
 		public static final String IF_NONE_MATCH = "If-None-Match";
 		public static final String IF_RANGE = "If-Range";
 		public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
-		public static final String KEEP_ALIVE = "Keep-Alive";
 		public static final String MAX_FORWARDS = "Max-Forwards";
 		public static final String PRAGMA = "Pragma";
 		public static final String PROXY_AUTHORIZATION = "Proxy-Authorization";

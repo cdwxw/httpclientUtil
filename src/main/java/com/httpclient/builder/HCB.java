@@ -40,6 +40,7 @@ import com.httpclient.exception.HttpProcessException;
 public class HCB extends HttpClientBuilder{
 	
 	public boolean isSetPool=false;//记录是否设置了连接池
+//	private boolean isNewSSL=false;//记录是否设置了更新了ssl
 	private SSLProtocolVersion sslpv=SSLProtocolVersion.SSLv3;//ssl 协议版本
 	
 	//用于配置ssl
@@ -139,7 +140,8 @@ public class HCB extends HttpClientBuilder{
 		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
 				.<ConnectionSocketFactory> create()
 				.register("http", PlainConnectionSocketFactory.INSTANCE)
-				.register("https", ssls.getSSLCONNSF(sslpv)).build();
+				.register("https", ssls.getSSLCONNSF(sslpv))
+				.build();
 		//设置连接池大小
 		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
 		connManager.setMaxTotal(maxTotal);// Increase max total connection to $maxTotal
@@ -203,11 +205,11 @@ public class HCB extends HttpClientBuilder{
 	            if (exception instanceof ConnectTimeoutException) {// 连接被拒绝
 	            	return false;
 	            }
-	            if (exception instanceof SSLException) {// SSL握手异常
+	            if (exception instanceof SSLException) {// SSL异常
 	                return false;
 	            }
 
-	            HttpClientContext clientContext = HttpClientContext .adapt(context);
+				HttpClientContext clientContext = HttpClientContext.adapt(context);
 	            HttpRequest request = clientContext.getRequest();
 	            // 如果请求是幂等的，就再次尝试
 	            if (!(request instanceof HttpEntityEnclosingRequest)) {
