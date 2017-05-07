@@ -37,30 +37,11 @@ public class PropertiesUtil {
 	}
 	
 	/**
-	 * 读取属性文件，并将读出来的属性集合添加到【allProps】当中
-	 * 如果该属性文件之前已读取过，则直接从【allProps】获得
-	 */
-	public static Properties getProperties(String fileName) {
-		if (fileName==null || "".equals(fileName)) {
-			return defaultProp;
-		} else {
-			Properties prop = allProps.get(fileName);
-			if(prop == null) {
-				prop = loadProperties(fileName);
-				allProps.put(fileName, prop);
-			}
-			
-			return prop;
-		}
-	}		
-	
-	/**
 	 * 解析属性文件，将文件中的所有属性都读取到【Properties】当中
 	 */
 	protected static Properties loadProperties (String fileName) {
 		Properties prop = new Properties();
-		InputStream ins = null;
-		ins = PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName);
+		InputStream ins = PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName);
 		if (ins == null) {
 		    System.err.println("Can not find the resource!");
 		} else {
@@ -73,6 +54,23 @@ public class PropertiesUtil {
 			}
 		}
 		return prop;
+	}
+	
+	/**
+	 * 读取属性文件，并将读出来的属性集合添加到【allProps】当中
+	 * 如果该属性文件之前已读取过，则直接从【allProps】获得
+	 */
+	public static Properties getProperties(String fileName) {
+		if (fileName==null || "".equals(fileName)) {
+			return defaultProp;
+		} else {
+			Properties prop = allProps.get(fileName);
+			if(prop == null) {
+				prop = loadProperties(fileName);
+				allProps.put(fileName, prop);
+			}
+			return prop;
+		}
 	}
 	
 	/**

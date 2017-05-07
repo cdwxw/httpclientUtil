@@ -7,27 +7,32 @@ import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.protocol.HttpContext;
+
+import com.httpclient.test.SimpleHttpAsyncClientDemo.IHandler;
 
 //import com.tgb.ccl.http.exception.HttpProcessException;
 //import com.tgb.ccl.http.httpclient.builder.HCB;
 
-/** 
+/**
  * 请求配置类
  * 
  * @author wxw
- * @date 2016年2月2日 下午3:14:32 
- * @version 1.0 
+ * @date 2016年2月2日 下午3:14:32
+ * @version 1.0
  */
 public class HttpConfig {
-	
-	private HttpConfig(){};
-	
+
+	private HttpConfig() {
+	};
+
 	/**
 	 * 获取实例
+	 * 
 	 * @return
 	 */
-	public static HttpConfig custom(){
+	public static HttpConfig custom() {
 		return new HttpConfig();
 	}
 
@@ -35,12 +40,22 @@ public class HttpConfig {
 	 * HttpClient对象
 	 */
 	private HttpClient client;
-	
+
+	/**
+	 * CloseableHttpAsyncClient对象
+	 */
+	private CloseableHttpAsyncClient asynclient;
+
+	/**
+	 * 异步操作回调执行器
+	 */
+	private IHandler handler;
+
 	/**
 	 * Header头信息
 	 */
 	private Header[] headers;
-	
+
 	/**
 	 * 是否返回response的headers
 	 */
@@ -49,8 +64,8 @@ public class HttpConfig {
 	/**
 	 * 请求方法
 	 */
-	private HttpMethods method=HttpMethods.GET;
-	
+	private HttpMethods method = HttpMethods.GET;
+
 	/**
 	 * 请求方法名称
 	 */
@@ -65,7 +80,7 @@ public class HttpConfig {
 	 * 传递参数
 	 */
 	private Map<String, Object> map;
-	
+
 	/**
 	 * 以json格式作为输入参数
 	 */
@@ -74,7 +89,7 @@ public class HttpConfig {
 	/**
 	 * 输入输出编码
 	 */
-	private String encoding=Charset.defaultCharset().displayName();
+	private String encoding = Charset.defaultCharset().displayName();
 
 	/**
 	 * 输入编码
@@ -89,13 +104,14 @@ public class HttpConfig {
 	/**
 	 * 解决多线程下载时，stream被close的问题
 	 */
-	private static final ThreadLocal<OutputStream> outs = new ThreadLocal<OutputStream>();	
-	
+	private static final ThreadLocal<OutputStream> outs = new ThreadLocal<OutputStream>();
+
 	/**
 	 * 解决多线程处理时，url被覆盖问题
 	 */
-	private static final ThreadLocal<String> urls = new ThreadLocal<String>();	
-	
+	private static final ThreadLocal<String> urls = new ThreadLocal<String>();
+//	private String url;
+
 	/**
 	 * HttpClient对象
 	 */
@@ -103,15 +119,32 @@ public class HttpConfig {
 		this.client = client;
 		return this;
 	}
-	
+
+	/**
+	 * CloseableHttpAsyncClient对象
+	 */
+	public HttpConfig asynclient(CloseableHttpAsyncClient asynclient) {
+		this.asynclient = asynclient;
+		return this;
+	}
+
+	/**
+	 * 异步操作回调执行器
+	 */
+	public HttpConfig handler(IHandler handler) {
+		this.handler = handler;
+		return this;
+	}
+
 	/**
 	 * 资源url
 	 */
 	public HttpConfig url(String url) {
+//		this.url = url;
 		urls.set(url);
 		return this;
 	}
-	
+
 	/**
 	 * Header头信息
 	 */
@@ -119,16 +152,16 @@ public class HttpConfig {
 		this.headers = headers;
 		return this;
 	}
-	
+
 	/**
 	 * Header头信息(是否返回response中的headers)
 	 */
 	public HttpConfig headers(Header[] headers, boolean isReturnRespHeaders) {
 		this.headers = headers;
-		this.isReturnRespHeaders=isReturnRespHeaders;
+		this.isReturnRespHeaders = isReturnRespHeaders;
 		return this;
 	}
-	
+
 	/**
 	 * 请求方法
 	 */
@@ -136,7 +169,7 @@ public class HttpConfig {
 		this.method = method;
 		return this;
 	}
-	
+
 	/**
 	 * 请求方法
 	 */
@@ -144,7 +177,7 @@ public class HttpConfig {
 		this.methodName = methodName;
 		return this;
 	}
-	
+
 	/**
 	 * cookie操作相关
 	 */
@@ -152,16 +185,16 @@ public class HttpConfig {
 		this.context = context;
 		return this;
 	}
-	
+
 	/**
 	 * 传递参数 (同步操作)
 	 */
 	public HttpConfig map(Map<String, Object> map) {
 		synchronized (getClass()) {
-			if(this.map==null || map==null){
+			if (this.map == null || map == null) {
 				this.map = map;
-			}else {
-				this.map.putAll(map);;
+			} else {
+				this.map.putAll(map);
 			}
 		}
 		return this;
@@ -176,50 +209,57 @@ public class HttpConfig {
 		map.put(Utils.ENTITY_STRING, json);
 		return this;
 	}
-	
+
 	/**
 	 * 上传文件时用到
 	 */
 	public HttpConfig files(String[] filePaths) {
 		return files(filePaths, "file");
 	}
+
 	/**
 	 * 上传文件时用到
-	 * @param filePaths		待上传文件所在路径
+	 * 
+	 * @param filePaths
+	 *            待上传文件所在路径
 	 */
 	public HttpConfig files(String[] filePaths, String inputName) {
 		return files(filePaths, inputName, false);
 	}
+
 	/**
 	 * 上传文件时用到 (同步操作)
-	 * @param filePaths			待上传文件所在路径
-	 * @param inputName		即file input 标签的name值，默认为file
+	 * 
+	 * @param filePaths
+	 *            待上传文件所在路径
+	 * @param inputName
+	 *            即file input 标签的name值，默认为file
 	 * @param forceRemoveContentTypeChraset
 	 * @return
 	 */
 	public HttpConfig files(String[] filePaths, String inputName, boolean forceRemoveContentTypeChraset) {
 		synchronized (getClass()) {
-			if(this.map==null){
-				this.map= new HashMap<String, Object>();
+			if (this.map == null) {
+				this.map = new HashMap<String, Object>();
 			}
 		}
 		map.put(Utils.ENTITY_MULTIPART, filePaths);
-		map.put(Utils.ENTITY_MULTIPART+".name", inputName);
-		map.put(Utils.ENTITY_MULTIPART+".rmCharset", forceRemoveContentTypeChraset);
+		map.put(Utils.ENTITY_MULTIPART + ".name", inputName);
+		map.put(Utils.ENTITY_MULTIPART + ".rmCharset", forceRemoveContentTypeChraset);
 		return this;
 	}
-	
+
 	/**
 	 * 输入输出编码
 	 */
 	public HttpConfig encoding(String encoding) {
-		//设置输入输出
+		// 设置输入输出
 		inenc(encoding);
 		outenc(encoding);
 		this.encoding = encoding;
 		return this;
 	}
-	
+
 	/**
 	 * 输入编码
 	 */
@@ -227,7 +267,7 @@ public class HttpConfig {
 		this.inenc = inenc;
 		return this;
 	}
-	
+
 	/**
 	 * 输出编码
 	 */
@@ -235,7 +275,7 @@ public class HttpConfig {
 		this.outenc = outenc;
 		return this;
 	}
-	
+
 	/**
 	 * 输出流对象
 	 */
@@ -243,19 +283,29 @@ public class HttpConfig {
 		outs.set(out);
 		return this;
 	}
-	
+
 	public HttpClient client() {
 		return client;
 	}
-	
+
+	public CloseableHttpAsyncClient asynclient() {
+		return asynclient;
+	}
+
+	public IHandler handler() {
+		return handler;
+	}
+
 	public Header[] headers() {
 		return headers;
 	}
+
 	public boolean isReturnRespHeaders() {
 		return isReturnRespHeaders;
 	}
-	
+
 	public String url() {
+//		return url;
 		return urls.get();
 	}
 
@@ -278,7 +328,7 @@ public class HttpConfig {
 	public String json() {
 		return json;
 	}
-	
+
 	public String encoding() {
 		return encoding;
 	}

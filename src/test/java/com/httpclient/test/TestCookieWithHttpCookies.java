@@ -31,16 +31,17 @@ public class TestCookieWithHttpCookies {
 		//C币查询
 		String scoreUrl = "http://my.csdn.net/my/score";
 		
+		//使用封装的HttpCookies
 		HttpCookies cookies = HttpCookies.custom();
 		HttpConfig config =HttpConfig.custom().url(loginUrl).context(cookies.getContext());
 		//获取参数
 		String loginform = HttpClientUtil.get(config);//可以用.send(config)代替，但是推荐使用明确的get方法
 		//System.out.println(loginform);
 		
-//		//打印参数，可以看到cookie里已经有值了。
-//		for (Cookie cookie : cookies.getCookieStore().getCookies()) {
-//			System.out.println(cookie.getName()+"--"+cookie.getValue());
-//		}
+		//打印参数，可以看到cookie里已经有值了。
+		for (Cookie cookie : cookies.getCookieStore().getCookies()) {
+			System.out.println(cookie.getName()+"--"+cookie.getValue());
+		}
 		
 		System.out.println("获取登录所需参数");
 		String lt = regex("\"lt\" value=\"([^\"]*)\"", loginform)[0];
@@ -65,7 +66,7 @@ public class TestCookieWithHttpCookies {
 		}
 		System.out.println("----登录成功----");
 		
-//		//打印参数，可以看到cookie里已经有值了。
+		//打印参数，可以看到cookie里已经有值了。
 		for (Cookie cookie : cookies.getCookieStore().getCookies()) {
 			System.out.println(cookie.getName()+"--"+cookie.getValue());
 		}

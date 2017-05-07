@@ -32,10 +32,10 @@ public class OCR {
 	 */
 	private static final String apiUrl = "http://lab.ocrking.com/ok.html";
 	private static final String apiKey = PropertiesUtil.getProperty("OCR.key");
-	private static HttpClient client  =null; //=HCB.custom().proxy("127.0.0.1", 8888).build();
+	private static HttpClient client  =null; //=HCB.custom().proxy("127.0.0.1", 1080).build();
 
 	public static void enableCatch(){
-		client =HCB.custom().proxy("127.0.0.1", 8888).build();
+		client =HCB.custom().proxy("127.0.0.1", 1080).build();
 	}
 	public static void unEnableCatch(){
 		client =null;
@@ -99,8 +99,6 @@ public class OCR {
 		
 		return "Error:获取失败!";
 	}
-	
-	
 	
 	/**
 	 * 直接获取网络验证码（验证码不刷新）
@@ -191,16 +189,16 @@ public class OCR {
 	}
 	
 	public static void main(String[] args) throws HttpProcessException, IOException {
+//		enableCatch();
 		String filePath="D:/valiCode.png";
-		String url = "http://file.ocrking.net:6080/small/20161104/w4fCjnzCl8KTwphpwqnCv2bCn8Kp/66fcff8d-61b1-49d6-bbfe-7428cf7accdf_debug.png?e9gFvJmkLbmgsZNTUCCNkjfi8J0Wbpn1CZHeP98eT1kxZ0ISBDt8Ql6h6zQ79pJg";
-		String url2 = "http://59.41.9.91/GZCX/WebUI/Content/Handler/ValidateCode.ashx?0.3271647585525703";
+		String url2 = "http://119.6.84.89:7001/scwssb/CaptchaImg";
+		String url3 = "http://59.41.9.91/GZCX/WebUI/Content/Handler/ValidateCode.ashx?0.3271647585525703";
 		String code1 = ocrCode(filePath, 5);
-		String code2 = ocrCode4Net(url,5);
-		String code3 = ocrCode4Net(HttpConfig.custom().url(url2), System.getProperty("user.dir")+System.getProperty("file.separator")+"123.png", 5);
+		String code2 = ocrCode4Net(url2,5);
+		String code3 = ocrCode4Net(HttpConfig.custom().url(url3), System.getProperty("user.dir")+System.getProperty("file.separator")+"123.png", 5);
 		System.out.println(code1);
 		System.out.println(code2);
 		System.out.println(code3);
 		System.out.println("----");
-
 	}
 }

@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.http.Header;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 
 import com.httpclient.HttpClientUtil;
@@ -39,7 +40,13 @@ public class TestCookie {
 		HttpConfig config =HttpConfig.custom().url(loginUrl).context(context);
 		//获取参数
 		String loginform = HttpClientUtil.get(config);//可以用.send(config)代替，但是推荐使用明确的get方法
-		//System.out.println(loginform);
+//		System.out.println(loginform);
+		
+		//打印参数，可以看到cookie里已经有值了。
+		for (Cookie cookie : context.getCookieStore().getCookies()) {
+			System.out.println(cookie.getName()+"--"+cookie.getValue());
+		}
+		
 		System.out.println("获取登录所需参数");
 		String lt = regex("\"lt\" value=\"([^\"]*)\"", loginform)[0];
 		String execution = regex("\"execution\" value=\"([^\"]*)\"", loginform)[0];
@@ -47,8 +54,8 @@ public class TestCookie {
 		
 		//组装参数
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("username", "569529989@qq.com");
-		map.put("password", "Hok12345");
+		map.put("username", "用户名");
+		map.put("password", "密码");
 		map.put("lt", lt);
 		map.put("execution", execution);
 		map.put("_eventId", _eventId);
@@ -63,14 +70,13 @@ public class TestCookie {
 		}
 		System.out.println("----登录成功----");
 		
-//		//打印参数，可以看到cookie里已经有值了。
-//		cookieStore = context.getCookieStore();
-//		for (Cookie cookie : cookieStore.getCookies()) {
-//			System.out.println(cookie.getName()+"--"+cookie.getValue());
-//		}
+		//打印参数，可以看到cookie里已经有值了。
+		for (Cookie cookie : context.getCookieStore().getCookies()) {
+			System.out.println(cookie.getName()+"--"+cookie.getValue());
+		}
 		
-		//访问积分管理页面
-		Header[] headers = HttpHeader.custom().userAgent("User-Agent: Mozilla/5.0").build();
+		//访问积分管理页面	访问csdn必须带上userAgent
+		Header[] headers = HttpHeader.custom().userAgent("Mozilla/5.0").build();
 		result = HttpClientUtil.post(config.url(scoreUrl).headers(headers));//可以用.send(config.url(scoreUrl).headers(headers))代替，但是推荐使用明确的post方法
 		//获取C币
 		String score = regex("\"last-img\"><span>([^<]*)<", result)[0];

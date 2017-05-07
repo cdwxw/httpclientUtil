@@ -38,10 +38,10 @@ import com.httpclient.exception.HttpProcessException;
  * @date 2015年11月4日 下午4:10:59 
  * @version 1.0
  */
-public class HttpClientUtil{
+public final class HttpClientUtil{
 	
 	//默认采用的http协议的HttpClient对象
-	private static  HttpClient client4HTTP;
+	private static HttpClient client4HTTP;
 	
 	//默认采用的https协议的HttpClient对象
 	private static HttpClient client4HTTPS;

@@ -108,9 +108,9 @@ public class Utils {
 						break;
 					}else if(ENTITY_MULTIPART.equals(entry.getKey())){//MultipartEntityBuilder
 						File[] files  = null;
-						if(File.class.isAssignableFrom(entry.getValue().getClass().getComponentType())){
+						if(File.class.isAssignableFrom(entry.getValue().getClass().getComponentType())){ //文件流
 							files=(File[])entry.getValue();
-						}else if(entry.getValue().getClass().getComponentType()==String.class){
+						}else if(entry.getValue().getClass().getComponentType()==String.class){ //文件名
 							String[] names = (String[]) entry.getValue();
 							files = new File[names.length];
 							for (int i = 0; i < names.length; i++) {
@@ -161,6 +161,8 @@ public class Utils {
 	}
 
 	/**
+	 * 利用反射，强制去除文件上传contentType中的编码设置，否则，在某些情况下会导致上传失败
+	 * 
 	 * @param encoding
 	 * @param entity
 	 */

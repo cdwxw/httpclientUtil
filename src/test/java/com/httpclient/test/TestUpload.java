@@ -23,7 +23,7 @@ public class TestUpload {
 		HttpConfig config = prepareUpload();
 		
 		String url= "http://test.free.800m.net:8080/up.php?action=upsave";//上传地址
-		String[] filePaths = {"D:\\中国.txt","D:\\111.txt","C:\\Users\\160049\\Desktop\\中国.png"};//待上传的文件路径
+		String[] filePaths = {"D:/baidu.png","D:/新建文本文档.txt","D:/新建文本文档.txt.bak"};//待上传的文件路径
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("path", "./tomcat/vhost/test/ROOT/");//指定其他参数
@@ -39,7 +39,7 @@ public class TestUpload {
 	}
 
 	/**
-	 * 登录，并上传文件
+	 * 登录
 	 * 
 	 * @return
 	 * @throws HttpProcessException

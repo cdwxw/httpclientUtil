@@ -40,7 +40,7 @@ import com.httpclient.exception.HttpProcessException;
 public class HCB extends HttpClientBuilder{
 	
 	public boolean isSetPool=false;//记录是否设置了连接池
-//	private boolean isNewSSL=false;//记录是否设置了更新了ssl
+//	private boolean isNewSSL=false;//记录是否设置了更新ssl
 	private SSLProtocolVersion sslpv=SSLProtocolVersion.SSLv3;//ssl 协议版本
 	
 	//用于配置ssl
