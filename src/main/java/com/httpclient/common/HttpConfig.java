@@ -10,8 +10,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.protocol.HttpContext;
 
-import com.httpclient.test.SimpleHttpAsyncClientDemo.IHandler;
-
 //import com.tgb.ccl.http.exception.HttpProcessException;
 //import com.tgb.ccl.http.httpclient.builder.HCB;
 
@@ -110,7 +108,8 @@ public class HttpConfig {
 	 * 解决多线程处理时，url被覆盖问题
 	 */
 	private static final ThreadLocal<String> urls = new ThreadLocal<String>();
-//	private String url;
+
+	// private String url;
 
 	/**
 	 * HttpClient对象
@@ -140,7 +139,7 @@ public class HttpConfig {
 	 * 资源url
 	 */
 	public HttpConfig url(String url) {
-//		this.url = url;
+		// this.url = url;
 		urls.set(url);
 		return this;
 	}
@@ -305,7 +304,7 @@ public class HttpConfig {
 	}
 
 	public String url() {
-//		return url;
+		// return url;
 		return urls.get();
 	}
 
@@ -343,6 +342,37 @@ public class HttpConfig {
 
 	public OutputStream out() {
 		return outs.get();
+	}
+
+	/**
+	 * 回调处理接口
+	 * 
+	 * @author wxw
+	 * @date 2015年11月10日 上午10:05:40
+	 * @version 1.0
+	 */
+	public interface IHandler {
+
+		/**
+		 * 处理异常时，执行该方法
+		 * 
+		 * @return
+		 */
+		Object failed(Exception e);
+
+		/**
+		 * 处理正常时，执行该方法
+		 * 
+		 * @return
+		 */
+		Object completed(String respBody);
+
+		/**
+		 * 处理取消时，执行该方法
+		 * 
+		 * @return
+		 */
+		Object cancelled();
 	}
 
 }
